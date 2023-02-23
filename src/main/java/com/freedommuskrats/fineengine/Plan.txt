@@ -1,0 +1,7 @@
+Features
+- compare different investment options
+- UI interface, with csv option for now
+- compare best and worst case scenarios
+    + gradients along certain values
+    + multiple gradients at once?
+- vary contributions with csv
