@@ -1,12 +1,10 @@
-package com.freedommuskrats.fineengine.models.investments;
+package com.freedommuskrats.fineengine.dal.models.investments;
 
 import lombok.Data;
 
 import javax.persistence.Entity;
-import javax.persistence.Id;
 
 @Entity
-@Data
 public class Stock extends Investment{
 
 }

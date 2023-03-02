@@ -5,3 +5,8 @@ Features
     + gradients along certain values
     + multiple gradients at once?
 - vary contributions with csv
+
+https://www.positronx.io/how-to-install-mysql-on-mac-configure-mysql-in-terminal/
+mysql -u root -p
+CREATE DATABASE fineEngine;
+SHOW DATABASES;
