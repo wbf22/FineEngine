@@ -67,8 +67,4 @@ public class AnnuityMath {
         return pv / (1 + i*paymentAtEnd);
     }
 
-    public static double round(double value, int precision) {
-        double mult = Math.pow(10, precision);
-        return Math.round(value * mult) / mult;
-    }
 }

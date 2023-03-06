@@ -1,6 +1,7 @@
 package com.freedommuskrats.fineengine.dal.models.investments;
 
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
+import com.freedommuskrats.fineengine.service.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
@@ -20,19 +21,29 @@ public abstract class Investment {
     protected double currentValue;
     protected String name;
     @ElementCollection
-    protected Map<Double, Double> contributionSchedule;
+    protected List<Double> contributionSchedule;
 
-    public Investment() {
+    protected TimeUnit contributionPeriod;
+
+    protected Investment() {
 
     }
 
-    public Investment(double yearlyReturnRate, double value, String name, Map<Double, Double> contributionSchedule) {
+    protected Investment(
+            double yearlyReturnRate,
+            double value, String name,
+            List<Double> contributionSchedule,
+            TimeUnit contributionPeriod
+    ) {
         this.yearlyReturnRate = yearlyReturnRate;
         this.currentValue = value;
         this.name = name;
         this.contributionSchedule = contributionSchedule;
+        this.contributionPeriod = contributionPeriod;
     }
 
+
+    public abstract Summary getSummary (int years, boolean liquidateAtEnd);
 
 
     public Projection makeProjection(
@@ -98,6 +109,14 @@ public abstract class Investment {
         return new Projection(lines);
     }
 
+
+    public static List<Double> createConstantContributionSchedule(double amount, int numberContributions) {
+        List<Double> schedule = new ArrayList<>();
+        for (int i = 0; i < numberContributions; i++) {
+            schedule.add(amount);
+        }
+        return schedule;
+    }
 
 
 }

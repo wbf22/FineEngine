@@ -26,7 +26,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(417.82, AnnuityMath.round(fv, 2));
+        assertEquals(417.82, GeneralUtil.round(fv, 2));
     }
 
     @Test
@@ -48,7 +48,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(415.09, AnnuityMath.round(fv, 2));
+        assertEquals(415.09, GeneralUtil.round(fv, 2));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(3077.09, AnnuityMath.round(fv, 2));
+        assertEquals(3077.09, GeneralUtil.round(fv, 2));
     }
 
     @Test
@@ -94,7 +94,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(2210.00, AnnuityMath.round(fv, 2));
+        assertEquals(2210.00, GeneralUtil.round(fv, 2));
     }
 
     @Test
@@ -117,7 +117,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(2026.67, AnnuityMath.round(fv, 2));
+        assertEquals(2026.67, GeneralUtil.round(fv, 2));
     }
 
 
@@ -139,7 +139,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(2398.20, AnnuityMath.round(pmt, 2));
+        assertEquals(2398.20, GeneralUtil.round(pmt, 2));
     }
 
 
@@ -161,7 +161,7 @@ public class AnnuityMathTest {
                 paymentAtEnd
         );
 
-        assertEquals(2386.27, AnnuityMath.round(pmt, 2));
+        assertEquals(2386.27, GeneralUtil.round(pmt, 2));
     }
 
 

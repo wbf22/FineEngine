@@ -4,6 +4,7 @@ import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
+import com.freedommuskrats.fineengine.util.GeneralUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,15 +28,15 @@ class LoanLogicTest {
         List<ProjectionLine> lines = projection.getLines();
         assertEquals(
                 0,
-                AnnuityMath.round(lines.get(lines.size() - 1).getEndBalance(),2)
+                GeneralUtil.round(lines.get(lines.size() - 1).getEndBalance(),2)
         );
         assertEquals(
                 23866.38,
-                AnnuityMath.round(lines.get(0).getInterest(),2)
+                GeneralUtil.round(lines.get(0).getInterest(),2)
         );
         assertEquals(
                 26245.77,
-                AnnuityMath.round(lines.get(28).getPrincipal(),2)
+                GeneralUtil.round(lines.get(28).getPrincipal(),2)
         );
     }
 }
