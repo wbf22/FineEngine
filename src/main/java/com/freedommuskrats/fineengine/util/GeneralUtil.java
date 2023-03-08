@@ -2,8 +2,12 @@ package com.freedommuskrats.fineengine.util;
 
 public class GeneralUtil {
 
-    public static void print(Object message) {
-        System.out.println(message);
+    public static void formatPrint(String format, Object singleValue) {
+        print(String.format(format, singleValue.toString()));
+    }
+
+    public static void print(Object object) {
+        System.out.println(object);
     }
 
     public static void print() {
