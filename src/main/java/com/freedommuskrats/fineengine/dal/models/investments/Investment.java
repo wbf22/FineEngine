@@ -10,13 +10,15 @@ import lombok.Data;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @MappedSuperclass
 @Data
 public abstract class Investment {
+
     @Id
-    protected Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    protected Long investmentId;
+
     protected double yearlyReturnRate;
     protected double currentValue;
     protected String name;

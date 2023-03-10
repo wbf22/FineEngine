@@ -19,4 +19,5 @@ public class GeneralUtil {
         double mult = Math.pow(10, precision);
         return Math.round(value * mult) / mult;
     }
+
 }

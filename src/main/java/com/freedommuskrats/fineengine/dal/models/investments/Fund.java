@@ -7,19 +7,26 @@ import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.*;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.List;
 import java.util.Map;
 
 @Entity
-public class Fund extends Investment{
+@Data
+@EqualsAndHashCode(callSuper=false)
+public class Fund extends Investment {
+
+
     private String conditions;
 
     public Fund() {
         super();
     }
 
-    public Fund(double returnRate, float value, String name, List<Double> contributionSchedule, String conditions, TimeUnit contributionFrequency) {
-        super(returnRate, value, name, contributionSchedule, contributionFrequency);
+    public Fund(double yearlyReturnRate, float value, String name, List<Double> contributionSchedule, String conditions, TimeUnit contributionFrequency) {
+        super(yearlyReturnRate, value, name, contributionSchedule, contributionFrequency);
         this.conditions = conditions;
     }
 

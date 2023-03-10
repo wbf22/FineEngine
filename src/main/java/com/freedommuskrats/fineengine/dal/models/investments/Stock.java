@@ -7,10 +7,12 @@ import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Stock extends Investment{
-
 
     @Override
     public Summary getSummary(int years, boolean liquidateAtEnd) {

@@ -6,9 +6,7 @@ import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
 import lombok.Data;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +15,8 @@ import java.util.Map;
 @Data
 public class Loan {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long loadId;
     private double loanAmount;
     private double termYearsLeft;
     private double yearlyInterestRate;

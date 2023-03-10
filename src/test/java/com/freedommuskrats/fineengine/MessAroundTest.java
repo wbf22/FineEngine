@@ -1,8 +1,9 @@
-package com.freedommuskrats.fineengine.dal.models.investments;
+package com.freedommuskrats.fineengine;
 
 
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
+import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
 import com.freedommuskrats.fineengine.service.comparison.Summary;
@@ -13,7 +14,7 @@ import java.util.*;
 import static com.freedommuskrats.fineengine.dal.models.investments.Investment.createConstantContributionSchedule;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.*;
 
-public class InvestmentGetSummaryTest {
+public class MessAroundTest {
 
     int years = 30;
     int yearsToSellHouse = 100;
@@ -279,7 +280,7 @@ public class InvestmentGetSummaryTest {
      * It looks like the best strategy is to divert the max amount of funds to the mortgage. Advantages:
      * - less overall cost from mortgage (lots of interest being paid at start of loan)
      * - less debt risk during initial years
-     * - frees up more time to be investing
+     * - frees up more money and time for investing
      *
      * Some Reasons
      * - you can make money if the house appreciates a lot, but you'll sell at the same time as buying so

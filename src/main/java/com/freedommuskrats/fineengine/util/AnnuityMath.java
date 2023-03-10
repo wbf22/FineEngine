@@ -1,6 +1,12 @@
 package com.freedommuskrats.fineengine.util;
 
 import javax.swing.plaf.IconUIResource;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static com.freedommuskrats.fineengine.dal.models.investments.Investment.createConstantContributionSchedule;
+import static com.freedommuskrats.fineengine.util.GeneralUtil.round;
 
 public class AnnuityMath {
 
@@ -67,4 +73,25 @@ public class AnnuityMath {
         return pv / (1 + i*paymentAtEnd);
     }
 
+    public static List<Double> buildContributionSchedule(Map<Integer, Double> yearsAndAmounts, int desiredLengthYears) {
+        int desiredLength = desiredLengthYears * 12;
+
+        List<Double> schedule = new ArrayList<>();
+        yearsAndAmounts.forEach((key, value) -> {
+            for (int i = 0; i < key * 12; i++) {
+                schedule.add(round(value, 2));
+            }
+        });
+
+        List<Double> resized = schedule;
+        if (schedule.size() > desiredLength) {
+            resized = schedule.subList(0, desiredLength);
+        }
+        if (schedule.size() < desiredLength) {
+            resized.addAll(
+                    createConstantContributionSchedule(0, desiredLength-schedule.size())
+            );
+        }
+        return  resized;
+    }
 }

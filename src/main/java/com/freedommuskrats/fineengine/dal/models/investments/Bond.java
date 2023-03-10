@@ -7,9 +7,13 @@ import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.Data;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 @Entity
 public class Bond extends Investment{
+
     private float lengthYears;
 
     @Override

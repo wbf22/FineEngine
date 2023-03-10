@@ -2,7 +2,6 @@ package com.freedommuskrats.fineengine.dal.models.property;
 
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
-import com.freedommuskrats.fineengine.dal.models.investments.Investment;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
 import com.freedommuskrats.fineengine.service.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
@@ -10,27 +9,26 @@ import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
 
 @Entity
+@Data
 @EqualsAndHashCode(callSuper=false)
 public class Home extends Property {
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, fetch=FetchType.EAGER)
     private Loan mortgage;
     private double propertyTaxRate;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, fetch=FetchType.EAGER)
     private Insurance homeInsurance;
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL}, fetch=FetchType.EAGER)
     private Insurance pmi;
     private double montlyHOAFee;
     private double yearlyUpkeepCost;
 
     public Home(
-            double returnRate,
+            double yearlyReturnRate,
             double value,
             String name,
             List<Double> contributionSchedule,
@@ -40,7 +38,7 @@ public class Home extends Property {
             Insurance pmi,
             double montlyHOAFee,
             double yearlyUpkeepCost) {
-        super(returnRate, value, name, contributionSchedule, TimeUnit.MONTH);
+        super(yearlyReturnRate, value, name, contributionSchedule, TimeUnit.MONTH);
         this.mortgage = mortgage;
         this.propertyTaxRate = propertyTaxRate;
         this.homeInsurance = homeInsurance;
@@ -57,8 +55,8 @@ public class Home extends Property {
     public Summary getSummary(int years, boolean liquidateAtEnd) {
         Projection mortgageProjection = getMonthlyMortgagePaymentSchedule();
 
-        years = (years >= mortgageProjection.getLines().size())? mortgageProjection.getLines().size() - 1 : years;
-        ProjectionLine lastLine = mortgageProjection.getLines().get(years);
+        int lastLineIndex = (years >= mortgageProjection.getLines().size())? mortgageProjection.getLines().size() - 1 : years;
+        ProjectionLine lastLine = mortgageProjection.getLines().get(lastLineIndex);
         double cost = getTotalCost(years, liquidateAtEnd) * -1;
         if (liquidateAtEnd) {
             return new Summary(cost, 0);
@@ -131,7 +129,7 @@ public class Home extends Property {
             i++;
         }
 
-        double taxCost = currentValue * propertyTaxRate / 100 * yearsToProject;
+        double taxCost = currentValue * (propertyTaxRate / 100) * yearsToProject;
         double yearlyUpKeepCost = yearlyUpkeepCost * yearsToProject;
         return  mortgageCost + hoaCost + insCost + pmiCost + taxCost + yearlyUpKeepCost;
     }
