@@ -21,9 +21,10 @@ public class MessAroundTest {
     double monthlyDisposableIncome = 3500;
     double fundRate = 7; // 7
     double houseAppRate = 4; // 4
-    double mortgageRate = 5; // 5
+    double mortgageRate = 6; // 5
     double houseValue = 320000;
     int loanLength = 15;
+    int yearsInApartment = 2;
 
     @Test
     void test_CompositePlan() {
@@ -118,10 +119,10 @@ public class MessAroundTest {
         );
         double monthlyPayment = home.monthlyMortgagePayment();
 
-        double apartmentProfit = -830 * 12 * 5;
+        double apartmentProfit = -830 * 12 * yearsInApartment;
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
-        yearsAndAmounts.put(5, monthlyDisposableIncome - 830);
+        yearsAndAmounts.put(yearsInApartment, monthlyDisposableIncome - 830);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
         List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
@@ -170,11 +171,12 @@ public class MessAroundTest {
         );
         double monthlyPayment = home.monthlyMortgagePayment();
 
-        double apartmentProfit = -830 * 12 * 5;
-        double houseSavings = houseValue * downPaymentPercentage / (12*5);
+        double apartmentProfit = -830 * 12 * yearsInApartment;
+        double houseSavings = houseValue * downPaymentPercentage / (12*yearsInApartment);
+        houseSavings = Math.min(houseSavings, monthlyDisposableIncome);
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
-        yearsAndAmounts.put(5, monthlyDisposableIncome - 830 - houseSavings);
+        yearsAndAmounts.put(yearsInApartment, monthlyDisposableIncome - 830 - houseSavings);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
         List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
@@ -205,7 +207,7 @@ public class MessAroundTest {
     }
 
     void maxDownPaymentThenHomeThenInvest() {
-        double downPayment = monthlyDisposableIncome * 5 * 12;
+        double downPayment = monthlyDisposableIncome * yearsInApartment * 12;
 
         Loan mortgage = new Loan(houseValue - downPayment, loanLength, mortgageRate, null);
         Insurance homeInsurance = new Insurance(125, 0);
@@ -224,10 +226,10 @@ public class MessAroundTest {
         );
         double monthlyPayment = home.monthlyMortgagePayment();
 
-        double apartmentProfit = -830 * 12 * 5;
+        double apartmentProfit = -830 * 12 * yearsInApartment;
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
-        yearsAndAmounts.put(5, 0.0);
+        yearsAndAmounts.put(yearsInApartment, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
         List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
@@ -260,7 +262,7 @@ public class MessAroundTest {
     void buyHouseDuringDipMaxDownThenHomeTheInvest() {
         double downPayment = monthlyDisposableIncome * 1 * 12;
 
-        Loan mortgage = new Loan(houseValue * .94 - downPayment, loanLength, mortgageRate, null);
+        Loan mortgage = new Loan(houseValue * .92 - downPayment, loanLength, mortgageRate, null);
         Insurance homeInsurance = new Insurance(125, 0);
         Insurance pmi = new Insurance(120, 0);
         Home home = new Home(
@@ -311,7 +313,7 @@ public class MessAroundTest {
     }
 
     void buyHouseAfterDipMaxDownThenHomeTheInvest() {
-        double downPayment = monthlyDisposableIncome * 2 * 12;
+        double downPayment = monthlyDisposableIncome * yearsInApartment * 12;
 
         Loan mortgage = new Loan(houseValue * .98 - downPayment, loanLength, mortgageRate, null);
         Insurance homeInsurance = new Insurance(125, 0);
@@ -330,10 +332,10 @@ public class MessAroundTest {
         );
         double monthlyPayment = home.monthlyMortgagePayment();
 
-        double apartmentProfit = -830 * 12 * 2;
+        double apartmentProfit = -830 * 12 * yearsInApartment;
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
-        yearsAndAmounts.put(2, 0.0);
+        yearsAndAmounts.put(yearsInApartment, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
         List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
