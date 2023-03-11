@@ -46,6 +46,10 @@ public class MessAroundTest {
         minDownPaymentAndInvestThenHomeThenInvest();
 
         maxDownPaymentThenHomeThenInvest();
+
+        buyHouseDuringDipMaxDownThenHomeTheInvest();
+
+        buyHouseAfterDipMaxDownThenHomeTheInvest();
     }
 
     void homeThenInvest(){
@@ -242,6 +246,112 @@ public class MessAroundTest {
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 
         print("Apartment Save for Downpayment no Invest, Then Home, Then Invest");
+        formatPrint("-home profit %s", homeSummary);
+        formatPrint("-monthly payment %s", monthlyPayment);
+        formatPrint("-downpayment %s", downPayment);
+        formatPrint("-mortgage cost %s", monthlyPayment * 12 * loanLength);
+        formatPrint("-apartment profit %s", apartmentProfit);
+        formatPrint("-fund profit %s", fundFirst.getSummary(years, false));
+        print(contributionSchedule);
+        formatPrint("-profit minus debt %s", total);
+        print();
+    }
+
+    void buyHouseDuringDipMaxDownThenHomeTheInvest() {
+        double downPayment = monthlyDisposableIncome * 1 * 12;
+
+        Loan mortgage = new Loan(houseValue * .94 - downPayment, loanLength, mortgageRate, null);
+        Insurance homeInsurance = new Insurance(125, 0);
+        Insurance pmi = new Insurance(120, 0);
+        Home home = new Home(
+                houseAppRate,
+                houseValue,
+                "House",
+                null,
+                mortgage,
+                1.2,
+                homeInsurance,
+                pmi,
+                0,
+                4000
+        );
+        double monthlyPayment = home.monthlyMortgagePayment();
+
+        double apartmentProfit = -830 * 12;
+
+        Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
+        yearsAndAmounts.put(1, 0.0);
+        yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
+        yearsAndAmounts.put(100, monthlyDisposableIncome);
+        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+
+        Fund fundFirst = new Fund(
+                fundRate,
+                2000,
+                "EFT",
+                contributionSchedule,
+                null,
+                TimeUnit.MONTH
+        );
+
+        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary eftSummary = fundFirst.getSummary(years, false);
+        double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
+
+        print("Apartment Save for Downpayment no Invest Buy during 2023 dip, Then Home, Then Invest");
+        formatPrint("-home profit %s", homeSummary);
+        formatPrint("-monthly payment %s", monthlyPayment);
+        formatPrint("-downpayment %s", downPayment);
+        formatPrint("-mortgage cost %s", monthlyPayment * 12 * loanLength);
+        formatPrint("-apartment profit %s", apartmentProfit);
+        formatPrint("-fund profit %s", fundFirst.getSummary(years, false));
+        print(contributionSchedule);
+        formatPrint("-profit minus debt %s", total);
+        print();
+    }
+
+    void buyHouseAfterDipMaxDownThenHomeTheInvest() {
+        double downPayment = monthlyDisposableIncome * 2 * 12;
+
+        Loan mortgage = new Loan(houseValue * .98 - downPayment, loanLength, mortgageRate, null);
+        Insurance homeInsurance = new Insurance(125, 0);
+        Insurance pmi = new Insurance(120, 0);
+        Home home = new Home(
+                houseAppRate,
+                houseValue,
+                "House",
+                null,
+                mortgage,
+                1.2,
+                homeInsurance,
+                pmi,
+                0,
+                4000
+        );
+        double monthlyPayment = home.monthlyMortgagePayment();
+
+        double apartmentProfit = -830 * 12 * 2;
+
+        Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
+        yearsAndAmounts.put(2, 0.0);
+        yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
+        yearsAndAmounts.put(100, monthlyDisposableIncome);
+        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+
+        Fund fundFirst = new Fund(
+                fundRate,
+                2000,
+                "EFT",
+                contributionSchedule,
+                null,
+                TimeUnit.MONTH
+        );
+
+        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary eftSummary = fundFirst.getSummary(years, false);
+        double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
+
+        print("Apartment Save for Downpayment no Invest Buy a little after 2023 dip, Then Home, Then Invest");
         formatPrint("-home profit %s", homeSummary);
         formatPrint("-monthly payment %s", monthlyPayment);
         formatPrint("-downpayment %s", downPayment);

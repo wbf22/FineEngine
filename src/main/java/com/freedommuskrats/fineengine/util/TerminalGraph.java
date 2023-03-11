@@ -106,7 +106,7 @@ public class TerminalGraph {
 
 
     private char[][] addGraphDecorations(char[][] graph, double[] yminMax, double[] xminMax) {
-
+        return graph;
     }
     private void display(char[][] g) {
         for (int y = g[0].length - 1; y >= 0; y--) {
