@@ -14,18 +14,30 @@ public class TerminalGraph {
     char[] graphIcons = new char[]{'*', '+', 'o', 'c', '%', '&',  '@', '#'};
     int columns = 8;
     int rows = 8;
+    int graphIndent = 16;
+    int graphCenter = graphIndent + 4 * columns/2;
 
     public TerminalGraph(
             String yLabel,
             String xLabel,
             Map<String, List<Double>> yValues)
     {
+        final double[] yminMax = {0, 0};
+        final double[] xminMax = {0, 0};
+        yValues.forEach((label, values) -> {
+            yminMax[0] = Math.min(yminMax[0], Collections.min(values));
+            yminMax[1] = Math.max(yminMax[1], Collections.max(values));
+            xminMax[1] = Math.max(xminMax[1], values.size());
+        });
+
         graph = new char[36][9];
         graph = initialize(graph);
 
         graph = makeBorder(graph);
 
-        graph = graphPoints(graph, yValues);
+        graph = graphPoints(graph, yValues, yminMax, xminMax);
+
+        graph = addGraphDecorations(graph, yminMax, xminMax );
 
         display(graph);
     }
@@ -50,16 +62,10 @@ public class TerminalGraph {
 
     private char[][] graphPoints(
             char[][] g,
-            Map<String, List<Double>> yValues)
+            Map<String, List<Double>> yValues,
+            double[] yminMax,
+            double[] xminMax)
     {
-        final double[] yminMax = {0, 0};
-        final double[] xminMax = {0, 0};
-        yValues.forEach((label, values) -> {
-            yminMax[0] = Math.min(yminMax[0], Collections.min(values));
-            yminMax[1] = Math.max(yminMax[1], Collections.max(values));
-            xminMax[1] = Math.max(xminMax[1], values.size());
-        });
-
         double yRange = yminMax[1] - yminMax[0];
         double yStep = yRange / rows;
 
@@ -99,6 +105,9 @@ public class TerminalGraph {
     }
 
 
+    private char[][] addGraphDecorations(char[][] graph, double[] yminMax, double[] xminMax) {
+
+    }
     private void display(char[][] g) {
         for (int y = g[0].length - 1; y >= 0; y--) {
             for (int x = 0; x < g.length; x++) {
