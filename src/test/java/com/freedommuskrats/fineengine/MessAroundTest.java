@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static com.freedommuskrats.fineengine.dal.models.investments.Investment.createConstantContributionSchedule;
+import static com.freedommuskrats.fineengine.util.AnnuityMath.buildMonthlyContributionSchedule;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.*;
 
 public class MessAroundTest {
@@ -22,7 +22,7 @@ public class MessAroundTest {
     double fundRate = 7; // 7
     double houseAppRate = 4; // 4
     double mortgageRate = 6; // 5
-    double houseValue = 320000;
+    double houseValue = 300000;
     int loanLength = 15;
     int yearsInApartment = 2;
 
@@ -75,7 +75,7 @@ public class MessAroundTest {
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundWithHome = new Fund(
                 fundRate,
@@ -125,7 +125,7 @@ public class MessAroundTest {
         yearsAndAmounts.put(yearsInApartment, monthlyDisposableIncome - 830);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundFirst = new Fund(
                 fundRate,
@@ -179,7 +179,7 @@ public class MessAroundTest {
         yearsAndAmounts.put(yearsInApartment, monthlyDisposableIncome - 830 - houseSavings);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundFirst = new Fund(
                 fundRate,
@@ -232,7 +232,7 @@ public class MessAroundTest {
         yearsAndAmounts.put(yearsInApartment, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundFirst = new Fund(
                 fundRate,
@@ -285,7 +285,7 @@ public class MessAroundTest {
         yearsAndAmounts.put(1, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundFirst = new Fund(
                 fundRate,
@@ -338,7 +338,7 @@ public class MessAroundTest {
         yearsAndAmounts.put(yearsInApartment, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fundFirst = new Fund(
                 fundRate,
@@ -365,28 +365,6 @@ public class MessAroundTest {
         print();
     }
 
-    List<Double> buildContributionSchedule(Map<Integer, Double> yearsAndAmounts, int desiredLengthYears) {
-        int desiredLength = desiredLengthYears * 12;
-
-        List<Double> schedule = new ArrayList<>();
-        yearsAndAmounts.forEach((key, value) -> {
-            for (int i = 0; i < key * 12; i++) {
-                schedule.add(round(value, 2));
-            }
-        });
-
-        List<Double> resized = schedule;
-        if (schedule.size() > desiredLength) {
-            resized = schedule.subList(0, desiredLength);
-        }
-        if (schedule.size() < desiredLength) {
-            resized.addAll(
-                    createConstantContributionSchedule(0, desiredLength-schedule.size())
-            );
-        }
-        return  resized;
-    }
-
 
     /**
      * It looks like the best strategy is to divert the max amount of funds to the mortgage. Advantages:
@@ -399,6 +377,9 @@ public class MessAroundTest {
      * the gain isn't really achieved.
      * - Investing first isn't better because the mortgage has a lot more interest
      *
+     *
+     * It's also better much better to get a cheaper home. A 250k home versus a 400k is a difference of almost
+     * a million dollars
      *
      */
 }

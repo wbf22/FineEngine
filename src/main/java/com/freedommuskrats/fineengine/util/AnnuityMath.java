@@ -1,6 +1,5 @@
 package com.freedommuskrats.fineengine.util;
 
-import javax.swing.plaf.IconUIResource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +72,7 @@ public class AnnuityMath {
         return pv / (1 + i*paymentAtEnd);
     }
 
-    public static List<Double> buildContributionSchedule(Map<Integer, Double> yearsAndAmounts, int desiredLengthYears) {
+    public static List<Double> buildMonthlyContributionSchedule(Map<Integer, Double> yearsAndAmounts, int desiredLengthYears) {
         int desiredLength = desiredLengthYears * 12;
 
         List<Double> schedule = new ArrayList<>();

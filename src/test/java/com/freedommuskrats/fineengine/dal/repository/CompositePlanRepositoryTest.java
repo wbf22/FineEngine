@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.freedommuskrats.fineengine.util.AnnuityMath.buildContributionSchedule;
+import static com.freedommuskrats.fineengine.util.AnnuityMath.buildMonthlyContributionSchedule;
 
 @SpringBootTest
 public class CompositePlanRepositoryTest {
@@ -60,7 +60,7 @@ public class CompositePlanRepositoryTest {
         yearsAndAmounts.put(5, 0.0);
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
         yearsAndAmounts.put(100, monthlyDisposableIncome);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         Fund fund = new Fund(
                 fundRate,

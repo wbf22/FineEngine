@@ -10,7 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.freedommuskrats.fineengine.util.AnnuityMath.buildContributionSchedule;
+import static com.freedommuskrats.fineengine.util.AnnuityMath.buildMonthlyContributionSchedule;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,7 +26,7 @@ public class FundRepositoryTest {
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
         yearsAndAmounts.put(years, 1000.0);
-        List<Double> contributionSchedule = buildContributionSchedule(yearsAndAmounts, years);
+        List<Double> contributionSchedule = buildMonthlyContributionSchedule(yearsAndAmounts, years);
 
         return new Fund(
                 fundRate,

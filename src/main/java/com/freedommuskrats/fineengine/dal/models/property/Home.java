@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -85,6 +86,18 @@ public class Home extends Property {
                 (int) Math.round(mortgage.getTermYearsLeft())
         );
     }
+
+    public Projection getMonthlyMortgagePaymentSchedule(List<Double> extraMonthlyPayment) {
+        return mortgage.calculateMonthlyPaymentSchedule(
+                mortgage.getLoanAmount(),
+                TimeUnit.MONTH,
+                false,
+                TimeUnit.MONTH,
+                (int) Math.round(mortgage.getTermYearsLeft()),
+                extraMonthlyPayment
+        );
+    }
+
 
     public double getTotalCost(int yearsToProject, boolean sellAtEnd) {
         Projection mortgageProjection = getMonthlyMortgagePaymentSchedule();

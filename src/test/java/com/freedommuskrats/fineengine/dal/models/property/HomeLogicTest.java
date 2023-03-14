@@ -25,6 +25,19 @@ class HomeLogicTest {
         assertEquals(210087.77, GeneralUtil.round(totalCost,2));
     }
 
+
+    @Test
+    void getTotalCost_variedContributionSchedule_normal() {
+        Loan mortgage = new Loan(400000, 30, 6, null);
+        Insurance homeInsurance = new Insurance(125, 0);
+        Insurance pmi = new Insurance(120, 0);
+
+        Home home = new Home(3, 400000, "House", null, mortgage, 1.2, homeInsurance, pmi, 0, 4000);
+
+        double totalCost = home.getTotalCost(30, true);
+        assertEquals(210087.77, GeneralUtil.round(totalCost,2));
+    }
+
     @Test
     void testStuff() {
         Loan mortgage = new Loan(400000, 15, 6, null);
