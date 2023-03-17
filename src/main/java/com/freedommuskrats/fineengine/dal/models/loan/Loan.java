@@ -4,12 +4,12 @@ import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
@@ -28,6 +28,7 @@ public class Loan {
     }
 
 
+    @Builder
     public Loan(double loanAmount, double termYearsLeft, double interestRate, List<Double> contributionSchedule) {
         this.loanAmount = loanAmount;
         this.termYearsLeft = termYearsLeft;
@@ -83,28 +84,20 @@ public class Loan {
             boolean contributeAtBeginning,
             TimeUnit compoundPeriod,
             int years,
-            List<Double> extraPayment
+            List<Double> paymentSchedule
     ) {
-        int extraPaymentYears = (contributionPeriod == TimeUnit.YEAR)? extraPayment.size() : extraPayment.size() * 12;
-        if (extraPaymentYears < years)
+        int paymentScheduleYears = (contributionPeriod == TimeUnit.YEAR)? paymentSchedule.size() : paymentSchedule.size() / 12;
+        if (paymentScheduleYears < years)
             throw new RuntimeException("Extra payment schedule must be as long as 'years'");
 
         double compoundPer = (compoundPeriod == TimeUnit.YEAR)? 1 : 12;
         double contributionPer = (contributionPeriod == TimeUnit.YEAR)? 1 : 12;
         int paymentAtEnd = (contributeAtBeginning)? 1 : 0;
 
-        double monthlyPayment = AnnuityMath.getMonthlyPayment(
-                startingAmount,
-                years,
-                yearlyInterestRate / 12.0,
-                compoundPer,
-                contributionPer,
-                paymentAtEnd);
-
         List<ProjectionLine> lines = new ArrayList<>();
         for (int i = 0; i < years; i++) {
 
-            double monthlyPaymentWithExtra = monthlyPayment + getExtraMonthlyPayment(i, contributionPeriod, extraPayment);
+            double monthlyPaymentWithExtra = getMonthlyPaymentFromSchedule(i, contributionPeriod, paymentSchedule);
 
             double endBalance = AnnuityMath.getFvValue(
                     startingAmount,
@@ -128,20 +121,20 @@ public class Loan {
         return new Projection(lines);
     }
 
-    double getExtraMonthlyPayment(
+    private double getMonthlyPaymentFromSchedule(
             int startYear,
             TimeUnit contributionPeriod,
-            List<Double> extraPayment)
+            List<Double> paymentSchedule)
     {
-        double extra;
+        double payment;
         if (contributionPeriod == TimeUnit.MONTH) {
-            extra = extraPayment.subList(startYear * 12, startYear * 12 + 12).stream().reduce(0.0, Double::sum);
-            extra /= 12;
+            payment = paymentSchedule.subList(startYear * 12, startYear * 12 + 12).stream().reduce(0.0, Double::sum);
+            payment /= 12;
         }
         else {
-            extra = extraPayment.get(startYear) / 12;
+            payment = paymentSchedule.get(startYear) / 12;
         }
-        return extra;
+        return payment;
     }
 
 }

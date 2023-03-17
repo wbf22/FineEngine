@@ -5,7 +5,7 @@ import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
-import com.freedommuskrats.fineengine.service.comparison.CompositePlan;
+import com.freedommuskrats.fineengine.dal.models.comparison.CompositePlan;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -52,7 +52,7 @@ public class CompositePlanRepositoryTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12 * 5;
 
@@ -71,7 +71,7 @@ public class CompositePlanRepositoryTest {
                 TimeUnit.MONTH
         );
 
-        return new CompositePlan(fund, home);
+        return new CompositePlan(years, fund, home, null);
     }
 
     @Test

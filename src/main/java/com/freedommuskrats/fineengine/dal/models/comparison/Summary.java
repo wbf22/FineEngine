@@ -1,4 +1,4 @@
-package com.freedommuskrats.fineengine.service.comparison;
+package com.freedommuskrats.fineengine.dal.models.comparison;
 
 public record Summary (
         double profitOrCost,

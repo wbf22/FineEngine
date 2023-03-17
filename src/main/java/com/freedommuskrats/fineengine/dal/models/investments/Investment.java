@@ -1,10 +1,11 @@
 package com.freedommuskrats.fineengine.dal.models.investments;
 
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
-import com.freedommuskrats.fineengine.service.comparison.Summary;
+import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;

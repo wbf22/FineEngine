@@ -3,15 +3,15 @@ package com.freedommuskrats.fineengine.dal.models.property;
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
-import com.freedommuskrats.fineengine.service.comparison.Summary;
+import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
@@ -28,6 +28,9 @@ public class Home extends Property {
     private double montlyHOAFee;
     private double yearlyUpkeepCost;
 
+    private double downPayment;
+
+    @Builder
     public Home(
             double yearlyReturnRate,
             double value,
@@ -52,9 +55,24 @@ public class Home extends Property {
 
     }
 
+
+    public Summary getSummaryMinPayments(int years, boolean liquidateAtEnd) {
+        Projection mortgageProjection = getMonthlyMortgagePaymentSchedule();
+
+        int lastLineIndex = (years >= mortgageProjection.getLines().size())? mortgageProjection.getLines().size() - 1 : years;
+        ProjectionLine lastLine = mortgageProjection.getLines().get(lastLineIndex);
+        double cost = getTotalCostMinPayments(years, liquidateAtEnd) * -1;
+        if (liquidateAtEnd) {
+            return new Summary(cost, 0);
+        }
+        else {
+            return new Summary(cost, lastLine.getEndBalance());
+        }
+    }
+
     @Override
     public Summary getSummary(int years, boolean liquidateAtEnd) {
-        Projection mortgageProjection = getMonthlyMortgagePaymentSchedule();
+        Projection mortgageProjection = getMonthlyMortgagePaymentSchedule(contributionSchedule);
 
         int lastLineIndex = (years >= mortgageProjection.getLines().size())? mortgageProjection.getLines().size() - 1 : years;
         ProjectionLine lastLine = mortgageProjection.getLines().get(lastLineIndex);
@@ -67,7 +85,7 @@ public class Home extends Property {
         }
     }
 
-    public double monthlyMortgagePayment() {
+    public double getMinMonthlyMortgagePayment() {
         return mortgage.calculateMonthlyPaymentSchedule(
                 mortgage.getLoanAmount(),
                 TimeUnit.MONTH,
@@ -87,19 +105,46 @@ public class Home extends Property {
         );
     }
 
-    public Projection getMonthlyMortgagePaymentSchedule(List<Double> extraMonthlyPayment) {
+    public Projection getMonthlyMortgagePaymentSchedule(List<Double> monthlyPayments) {
         return mortgage.calculateMonthlyPaymentSchedule(
                 mortgage.getLoanAmount(),
                 TimeUnit.MONTH,
                 false,
                 TimeUnit.MONTH,
                 (int) Math.round(mortgage.getTermYearsLeft()),
-                extraMonthlyPayment
+                monthlyPayments
         );
     }
 
 
     public double getTotalCost(int yearsToProject, boolean sellAtEnd) {
+        Projection mortgageProjection = getMonthlyMortgagePaymentSchedule(this.contributionSchedule);
+
+        Projection houseAppr = makeProjection(
+                currentValue,
+                0,
+                TimeUnit.YEAR,
+                false,
+                TimeUnit.YEAR,
+                yearsToProject
+        );
+
+        double totalOutOfPocket = getTotalOutOfPocket(mortgageProjection, yearsToProject, houseAppr);
+
+        double newHouseValue = (sellAtEnd)? houseAppr.getLines().get(houseAppr.getLines().size() - 1).getEndBalance()
+                : 0;
+        double mortgageEndBalance = mortgageProjection.getLines().get(
+                (yearsToProject <= mortgageProjection.getLines().size())? yearsToProject - 1 : mortgageProjection.getLines().size() - 1
+        ).getEndBalance();
+        double profitFromSale = (sellAtEnd)? newHouseValue - mortgageEndBalance : 0;
+
+        double totalCost = profitFromSale
+                - totalOutOfPocket;
+
+        return totalCost * -1;
+    }
+
+    public double getTotalCostMinPayments(int yearsToProject, boolean sellAtEnd) {
         Projection mortgageProjection = getMonthlyMortgagePaymentSchedule();
 
 
@@ -128,7 +173,10 @@ public class Home extends Property {
     }
 
     private double getTotalOutOfPocket(Projection mortgageProjection, int yearsToProject, Projection houseAppr){
-        double mortgageCost = mortgageProjection.getLines().get(0).getContribution() * yearsToProject;
+        double mortgageCost = mortgageProjection.getLines().stream()
+                .map(l -> l.getContribution())
+                .reduce(0.0, Double::sum);
+
         double hoaCost = montlyHOAFee * 12 * yearsToProject;
         double insCost = homeInsurance.getMonthlyPayment() * 12 * yearsToProject;
 

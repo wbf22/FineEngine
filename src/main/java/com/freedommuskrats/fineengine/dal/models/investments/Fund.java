@@ -1,17 +1,13 @@
 package com.freedommuskrats.fineengine.dal.models.investments;
 
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
-import com.freedommuskrats.fineengine.service.comparison.Summary;
+import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.*;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @Data
@@ -25,7 +21,9 @@ public class Fund extends Investment {
         super();
     }
 
-    public Fund(double yearlyReturnRate, float value, String name, List<Double> contributionSchedule, String conditions, TimeUnit contributionFrequency) {
+
+    @Builder
+    public Fund(double yearlyReturnRate, double value, String name, List<Double> contributionSchedule, String conditions, TimeUnit contributionFrequency) {
         super(yearlyReturnRate, value, name, contributionSchedule, contributionFrequency);
         this.conditions = conditions;
     }

@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class CliUiImpl implements CliUi{
+public class CliUiImpl {
 
 
     @Scheduled(initialDelay = 1, fixedDelay=Long.MAX_VALUE)

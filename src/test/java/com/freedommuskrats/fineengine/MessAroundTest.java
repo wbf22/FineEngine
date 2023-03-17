@@ -6,7 +6,7 @@ import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
-import com.freedommuskrats.fineengine.service.comparison.Summary;
+import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -70,7 +70,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         Map<Integer, Double> yearsAndAmounts = new LinkedHashMap<>();
         yearsAndAmounts.put(loanLength, monthlyDisposableIncome - monthlyPayment);
@@ -86,7 +86,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundWithHome.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost();
 
@@ -117,7 +117,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12 * yearsInApartment;
 
@@ -136,7 +136,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundFirst.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 
@@ -169,7 +169,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12 * yearsInApartment;
         double houseSavings = houseValue * downPaymentPercentage / (12*yearsInApartment);
@@ -190,7 +190,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundFirst.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 
@@ -224,7 +224,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12 * yearsInApartment;
 
@@ -243,7 +243,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundFirst.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 
@@ -277,7 +277,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12;
 
@@ -296,7 +296,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundFirst.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 
@@ -330,7 +330,7 @@ public class MessAroundTest {
                 0,
                 4000
         );
-        double monthlyPayment = home.monthlyMortgagePayment();
+        double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
         double apartmentProfit = -830 * 12 * yearsInApartment;
 
@@ -349,7 +349,7 @@ public class MessAroundTest {
                 TimeUnit.MONTH
         );
 
-        Summary homeSummary = home.getSummary(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
+        Summary homeSummary = home.getSummaryMinPayments(Math.min(Math.min(yearsToSellHouse, years), loanLength), (yearsToSellHouse < loanLength));
         Summary eftSummary = fundFirst.getSummary(years, false);
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() + apartmentProfit;
 

@@ -1,7 +1,8 @@
-package com.freedommuskrats.fineengine.dal.models.insurance;
+package com.freedommuskrats.fineengine.dal.models.property;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,20 +11,19 @@ import javax.persistence.Id;
 
 @Entity
 @Data
-public class Insurance {
+@NoArgsConstructor
+public class Apartment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long insuranceId;
+    private Long apartmentId;
     private double monthlyPayment;
-    private double coverage;
+    private int yearsInApartment;
 
     @Builder
-    public Insurance(double monthlyPayment, double coverage) {
+    public Apartment(double monthlyPayment, int yearsInApartment) {
         this.monthlyPayment = monthlyPayment;
-        this.coverage = coverage;
+        this.yearsInApartment = yearsInApartment;
     }
 
-    public Insurance() {
 
-    }
 }

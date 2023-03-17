@@ -93,4 +93,26 @@ public class AnnuityMath {
         }
         return  resized;
     }
+
+    public static List<Double> buildMonthlyContributionSchedule(List<Double> yearlyContributions, int desiredLengthYears) {
+        int desiredLength = desiredLengthYears * 12;
+
+        List<Double> schedule = new ArrayList<>();
+        yearlyContributions.forEach(value -> {
+            for (int i = 0; i < 12; i++) {
+                schedule.add(round(value, 2));
+            }
+        });
+
+        List<Double> resized = schedule;
+        if (schedule.size() > desiredLength) {
+            resized = schedule.subList(0, desiredLength);
+        }
+        if (schedule.size() < desiredLength) {
+            resized.addAll(
+                    createConstantContributionSchedule(0, desiredLength-schedule.size())
+            );
+        }
+        return  resized;
+    }
 }
