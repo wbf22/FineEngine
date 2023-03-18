@@ -17,9 +17,11 @@ public class CompositePlantTest {
 
     @Test
     void buildPlan() throws FileNotFoundException {
-        Fund fund = FundParser.parseFundBasic("src/test/resources/TestFundForm.txt");
-        Home home = HomeParser.parseHomeBasic("src/test/resources/TestHouseForm.txt");
-        CompositePlan compositePlan = CompositePlanParser.parseCompositePlan("src/test/resources/TestCompositePlanForm.txt", fund, home);
+        String year = "2027";
+
+        Fund fund = FundParser.parseFundBasic("src/test/resources/"+ year + "/F.txt");
+        Home home = HomeParser.parseHomeBasic("src/test/resources/"+ year + "/H.txt");
+        CompositePlan compositePlan = CompositePlanParser.parseCompositePlan("src/test/resources/"+ year + "/Cp.txt", fund, home, true);
 
         compositePlan.displayBasic();
     }

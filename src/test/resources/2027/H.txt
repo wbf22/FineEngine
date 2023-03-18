@@ -1,0 +1,19 @@
+#### Fill out this form replacing the default values ####
+
+ Once you're done save it, (cmd+s)
+and return to the terminal. (make sure not to add new lines or get rid of '=' signs
+or this will break badly)
+
+
+House Appreciation Rate = 4%
+Mortgage Rate = 6%
+House Value = 420000
+Loan Length in Years = 30
+Monthly Insurance = 125
+Monthly PMI = 120
+Property Tax Rate = 1.2%
+Monthy HOA Fee = 0
+Yearly Up Keep = 4000
+
+
+

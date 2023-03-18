@@ -1,8 +1,11 @@
 package com.freedommuskrats.fineengine.dal.models.comparison;
 
+import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.property.Apartment;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
+import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
+import com.freedommuskrats.fineengine.util.TerminalGraph;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.annotations.LazyCollection;
@@ -11,6 +14,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.freedommuskrats.fineengine.util.GeneralUtil.formatPrint;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.print;
@@ -76,9 +80,9 @@ public class CompositePlan {
 
         print();
 
+        print("*********Results**************");
         formatPrint("-home profit %s", homeSummary);
         formatPrint("-min monthly payment %s", monthlyPayment);
-//        formatPrint("-home total cost %s", mortgageCost);
         formatPrint("-down payment %s", home.getDownPayment());
         formatPrint("-fund profit %s", eftSummary);
         print("-home schedule");
@@ -87,6 +91,35 @@ public class CompositePlan {
         print(fund.getContributionSchedule());
         formatPrint("-profit minus debt %s", total);
         print();
+
+        List<Double> debt = home.getMonthlyMortgagePaymentSchedule(home.getContributionSchedule())
+                .getLines().stream()
+                .map(ProjectionLine::getEndBalance)
+                .toList();
+
+        List<Double> interest = home.getMonthlyMortgagePaymentSchedule(home.getContributionSchedule())
+                .getLines().stream()
+                .map(ProjectionLine::getInterest)
+                .toList();
+
+        List<Double> investment = fund.makeProjection(
+                fund.getCurrentValue(),
+                fund.getContributionSchedule(),
+                fund.getContributionPeriod(),
+                false,
+                TimeUnit.YEAR).getLines().stream()
+                .map(ProjectionLine::getEndBalance)
+                .toList();
+
+        print("****************DEBT**********************");
+        TerminalGraph debtGraph = new TerminalGraph(null, null, debt);
+
+        print("****************LOAN_INTEREST**********************");
+        TerminalGraph debtInterest = new TerminalGraph(null, null, interest);
+
+        print("****************INVESTMENT**********************");
+        TerminalGraph debtInvestment = new TerminalGraph(null, null, investment);
+
 
     }
 

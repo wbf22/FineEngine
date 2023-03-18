@@ -1,9 +1,6 @@
 package com.freedommuskrats.fineengine.util;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.freedommuskrats.fineengine.util.GeneralUtil.round;
 
@@ -46,6 +43,37 @@ public class TerminalGraph {
         display(graph);
     }
 
+    public TerminalGraph(
+            String yLabel,
+            String xLabel,
+            List<Double> yValues)
+    {
+        final double[] yminMax = {0, 0};
+        final double[] xminMax = {0, 0};
+
+        yminMax[0] = Math.min(yminMax[0], Collections.min(yValues));
+        yminMax[1] = Math.max(yminMax[1], Collections.max(yValues));
+        xminMax[1] = Math.max(xminMax[1], yValues.size());
+
+
+        graph = new char[37][9];
+        graph = initialize(graph);
+
+        graph = makeBorder(graph);
+
+        Map<String, List<Double>> map = new HashMap<>();
+        map.put("default", yValues);
+        graph = graphPoints(graph, map, yminMax, xminMax);
+
+        graph = insetGraphWithBorder(graph, 16,  3);
+
+        String[][] axisNumbers = determineAxisNumbers(graph, yminMax, xminMax );
+
+        graph = addGraphDecorations(graph, axisNumbers, 16, 3,  new String[]{xLabel, yLabel});
+
+        display(graph);
+    }
+
     private char[][] initialize(char[][] g) {
         for (int x = 0; x < g.length; x++) {
             Arrays.fill(g[x], ' ');
@@ -79,6 +107,7 @@ public class TerminalGraph {
                 int index = (int) Math.round(x * xStep);
                 if (index <= values.size()) {
                     int y = getYValueForX(values, yStep, index);
+                    y = Math.max(y, 0);
                     g[x * 4][y] = graphIcons[c[0]];
                 }
             }
@@ -126,8 +155,8 @@ public class TerminalGraph {
         String[] xLabels = new String[5];
 
         if (yminMax[1] > 1000000) {
-            yminMax[0] = round(yminMax[0] / 1000, 1);
-            yminMax[1] = round(yminMax[1] / 1000, 1);
+            yminMax[0] = round(yminMax[0] / 1000000, 1);
+            yminMax[1] = round(yminMax[1] / 1000000, 1);
 
             double yStep = (yminMax[1] - yminMax[0]) / 4;
 

@@ -4,6 +4,7 @@ import com.freedommuskrats.fineengine.dal.models.comparison.CompositePlan;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.property.Apartment;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
+import com.freedommuskrats.fineengine.util.GeneralUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,6 +13,8 @@ import java.io.FileReader;
 import java.util.*;
 
 import static com.freedommuskrats.fineengine.util.AnnuityMath.buildMonthlyContributionSchedule;
+import static com.freedommuskrats.fineengine.util.GeneralUtil.formatPrint;
+import static com.freedommuskrats.fineengine.util.GeneralUtil.print;
 
 public class CompositePlanParser {
 
@@ -31,7 +34,7 @@ public class CompositePlanParser {
             YEAR_FIELD)
     );
 
-    public static CompositePlan parseCompositePlan(String fileLocation, Fund fund, Home home) throws FileNotFoundException {
+    public static CompositePlan parseCompositePlan(String fileLocation, Fund fund, Home home, boolean display) throws FileNotFoundException {
         Map<String, Object> extractedFields = parseCompositePlanFields(fileLocation);
         int planLength = (int) extractedFields.get(PLAN_LENGTH);
         double monthlyIncome = (double) extractedFields.get(MONTHLY_INCOME);
@@ -70,6 +73,30 @@ public class CompositePlanParser {
                 .monthlyPayment(apartmentRent)
                 .yearsInApartment(yearsInApartment)
                 .build();
+
+        print("*********Start Values**************");
+        formatPrint("-Plan Length Years = %s", planLength);
+        formatPrint("-Monthly Available Income = %s", monthlyIncome);
+        formatPrint("-House Purchase Year = %s", purchaseYear);
+        formatPrint("-Apartment Rent Before Home Purchase = %s", apartmentRent);
+        print("Contribution Percentages House vs Investments (Adjusted to meet min mortgage payment and rent):");
+        Arrays.stream(percentSchedule).sequential().forEach(d -> System.out.print(GeneralUtil.round(d, 1) + ", "));
+        print();
+        formatPrint("-House Appreciation Rate = %s", home.getYearlyReturnRate());
+        formatPrint("-Mortgage Rate = %s", home.getMortgage().getYearlyInterestRate());
+        formatPrint("-House Value = %s", home.getCurrentValue());
+        formatPrint("-Mortgage Loan Amount = %s", home.getMortgage().getLoanAmount());
+        formatPrint("-Monthly Insurance =  %s", home.getHomeInsurance().getMonthlyPayment());
+        formatPrint("-Monthly PMI = %s", home.getPmi().getMonthlyPayment());
+        formatPrint("-Property Tax Rate = %s", home.getPropertyTaxRate());
+        formatPrint("-Monthy HOA Fee = %s", home.getMontlyHOAFee());
+        formatPrint("-Yearly Up Keep = %s", home.getYearlyUpkeepCost());
+        print();
+        formatPrint("-Yearly Return Rate = %s", fund.getYearlyReturnRate());
+        formatPrint("-Current Value = %s", fund.getCurrentValue());
+
+
+
 
         return CompositePlan.builder()
                 .planLengthYears(planLength)
