@@ -5,9 +5,9 @@ and return to the terminal. (make sure not modify fields on the left side of '='
 or this will break badly. New lines should be fine though)
 
 Plan Length Years = 40
-Monthly Available Income = 3200
+Monthly Available Income = 2400
 House Purchase Year = 1
-Apartment Rent Before Home Purchase = 830
+Apartment Rent Before Home Purchase = 1200
 
 Percent Income To House Instead of Investment = 100%
 

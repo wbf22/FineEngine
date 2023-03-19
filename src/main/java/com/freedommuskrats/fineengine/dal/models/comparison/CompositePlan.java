@@ -12,6 +12,9 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,15 +45,18 @@ public class CompositePlan {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<Apartment> apartments;
 
+    private StringBuilder builder;
+
     public CompositePlan(){}
 
 
     @Builder
-    public CompositePlan(int planLengthYears, Fund fund, Home home, Apartment apartment) {
+    public CompositePlan(int planLengthYears, Fund fund, Home home, Apartment apartment, StringBuilder stringBuilder) {
         this.planLengthYears = planLengthYears;
         funds = new ArrayList<>(List.of(fund));
         homes = new ArrayList<>(List.of(home));
         apartments  = new ArrayList<>(List.of(apartment));
+        this.builder = stringBuilder;
     }
 
 
@@ -60,7 +66,7 @@ public class CompositePlan {
     }
 
 
-    public void displayBasic() {
+    public void displayBasic(String resultFile) throws IOException {
         Home home = homes.get(0);
         Fund fund = funds.get(0);
         Apartment apartment = apartments.get(0);
@@ -69,7 +75,7 @@ public class CompositePlan {
                 planLengthYears - apartment.getYearsInApartment(),
                 (planLengthYears < home.getMortgage().getTermYearsLeft()));
         if (planLengthYears < home.getMortgage().getTermYearsLeft())
-            print("Assuming home sale since plan length is less than mortgage length");
+            builder.append("Assuming home sale since plan length is less than mortgage length");
 
         double monthlyPayment = home.getMinMonthlyMortgagePayment();
 
@@ -78,19 +84,29 @@ public class CompositePlan {
         double apartmentProfit =  apartment.getMonthlyPayment() * 12 * apartment.getYearsInApartment();
         double total = homeSummary.profitOrCost() - homeSummary.debt() + eftSummary.profitOrCost() - apartmentProfit;
 
-        print();
+        builder.append("\n");
 
-        print("*********Results**************");
-        formatPrint("-home profit %s", homeSummary);
-        formatPrint("-min monthly payment %s", monthlyPayment);
-        formatPrint("-down payment %s", home.getDownPayment());
-        formatPrint("-fund profit %s", eftSummary);
-        print("-home schedule");
-        print(home.getContributionSchedule());
-        print("-fund schedule");
-        print(fund.getContributionSchedule());
-        formatPrint("-profit minus debt %s", total);
-        print();
+        builder.append("*********Results**************");
+        builder.append("\n");
+        builder.append(String.format("-home profit %s", homeSummary));
+        builder.append("\n");
+        builder.append(String.format("-min monthly payment %s", monthlyPayment));
+        builder.append("\n");
+        builder.append(String.format("-down payment %s", home.getDownPayment()));
+        builder.append("\n");
+        builder.append(String.format("-fund profit %s", eftSummary));
+        builder.append("\n");
+        builder.append("-home schedule");
+        builder.append("\n");
+        builder.append(home.getContributionSchedule());
+        builder.append("\n");
+        builder.append("-fund schedule");
+        builder.append("\n");
+        builder.append(fund.getContributionSchedule());
+        builder.append("\n");
+        builder.append(String.format("-profit minus debt %s", total));
+        builder.append("\n");
+        builder.append("\n");
 
         List<Double> debt = home.getMonthlyMortgagePaymentSchedule(home.getContributionSchedule())
                 .getLines().stream()
@@ -111,15 +127,27 @@ public class CompositePlan {
                 .map(ProjectionLine::getEndBalance)
                 .toList();
 
-        print("****************DEBT**********************");
+        builder.append("****************DEBT**********************");
+        builder.append("\n");
         TerminalGraph debtGraph = new TerminalGraph(null, null, debt);
+        builder.append(debtGraph.display());
 
-        print("****************LOAN_INTEREST**********************");
+        builder.append("****************LOAN_INTEREST**********************");
+        builder.append("\n");
         TerminalGraph debtInterest = new TerminalGraph(null, null, interest);
+        builder.append(debtInterest.display());
 
-        print("****************INVESTMENT**********************");
+        builder.append("****************INVESTMENT**********************");
+        builder.append("\n");
         TerminalGraph debtInvestment = new TerminalGraph(null, null, investment);
+        builder.append(debtInvestment.display());
 
+        System.out.println(builder.toString());
+
+        File file = new File(resultFile);
+        FileWriter writer = new FileWriter(file);
+        writer.write(builder.toString());
+        writer.close();
 
     }
 

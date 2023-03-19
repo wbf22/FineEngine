@@ -6,7 +6,6 @@ import static com.freedommuskrats.fineengine.util.GeneralUtil.round;
 
 public class TerminalGraph {
 
-    char[][] graphWithDecorations;
     char[][] graph;
     char[] graphIcons = new char[]{'*', '+', 'o', 'c', '%', '&',  '@', '#'};
     int columns = 8;
@@ -71,7 +70,7 @@ public class TerminalGraph {
 
         graph = addGraphDecorations(graph, axisNumbers, 16, 3,  new String[]{xLabel, yLabel});
 
-        display(graph);
+//        display(graph);
     }
 
     private char[][] initialize(char[][] g) {
@@ -228,5 +227,16 @@ public class TerminalGraph {
             }
             System.out.println();
         }
+    }
+
+    public StringBuilder display() {
+        StringBuilder builder = new StringBuilder();
+        for (int y = graph[0].length - 1; y >= 0; y--) {
+            for (int x = 0; x < graph.length; x++) {
+                builder.append(graph[x][y]);
+            }
+            builder.append("\n");
+        }
+        return builder;
     }
 }

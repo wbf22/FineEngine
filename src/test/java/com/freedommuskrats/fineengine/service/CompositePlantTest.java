@@ -10,20 +10,30 @@ import com.freedommuskrats.fineengine.service.fileparsers.HomeParser;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Arrays;
 
 public class CompositePlantTest {
 
 
 
     @Test
-    void buildPlan() throws FileNotFoundException {
-        String year = "2027";
+    void buildPlan() throws IOException {
+        String[] years = {"1998", "2023", "2024", "2025", "2026", "2027"};
 
-        Fund fund = FundParser.parseFundBasic("src/test/resources/"+ year + "/F.txt");
-        Home home = HomeParser.parseHomeBasic("src/test/resources/"+ year + "/H.txt");
-        CompositePlan compositePlan = CompositePlanParser.parseCompositePlan("src/test/resources/"+ year + "/Cp.txt", fund, home, true);
+        Arrays.stream(years).sequential().forEach(year -> {
+            try {
+                Fund fund = FundParser.parseFundBasic("src/test/resources/"+ year + "/F.txt");
+                Home home = HomeParser.parseHomeBasic("src/test/resources/"+ year + "/H.txt");
+                CompositePlan compositePlan = CompositePlanParser.parseCompositePlan("src/test/resources/"+ year + "/Cp.txt", fund, home, true);
 
-        compositePlan.displayBasic();
+                compositePlan.displayBasic("src/test/resources/"+ year + "/Result.txt");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+        });
+
     }
 
 }

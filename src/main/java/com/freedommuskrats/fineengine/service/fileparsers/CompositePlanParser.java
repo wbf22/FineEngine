@@ -74,26 +74,44 @@ public class CompositePlanParser {
                 .yearsInApartment(yearsInApartment)
                 .build();
 
-        print("*********Start Values**************");
-        formatPrint("-Plan Length Years = %s", planLength);
-        formatPrint("-Monthly Available Income = %s", monthlyIncome);
-        formatPrint("-House Purchase Year = %s", purchaseYear);
-        formatPrint("-Apartment Rent Before Home Purchase = %s", apartmentRent);
-        print("Contribution Percentages House vs Investments (Adjusted to meet min mortgage payment and rent):");
-        Arrays.stream(percentSchedule).sequential().forEach(d -> System.out.print(GeneralUtil.round(d, 1) + ", "));
-        print();
-        formatPrint("-House Appreciation Rate = %s", home.getYearlyReturnRate());
-        formatPrint("-Mortgage Rate = %s", home.getMortgage().getYearlyInterestRate());
-        formatPrint("-House Value = %s", home.getCurrentValue());
-        formatPrint("-Mortgage Loan Amount = %s", home.getMortgage().getLoanAmount());
-        formatPrint("-Monthly Insurance =  %s", home.getHomeInsurance().getMonthlyPayment());
-        formatPrint("-Monthly PMI = %s", home.getPmi().getMonthlyPayment());
-        formatPrint("-Property Tax Rate = %s", home.getPropertyTaxRate());
-        formatPrint("-Monthy HOA Fee = %s", home.getMontlyHOAFee());
-        formatPrint("-Yearly Up Keep = %s", home.getYearlyUpkeepCost());
-        print();
-        formatPrint("-Yearly Return Rate = %s", fund.getYearlyReturnRate());
-        formatPrint("-Current Value = %s", fund.getCurrentValue());
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("*********Start Values**************");
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Plan Length Years = %s", planLength));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Monthly Available Income = %s", monthlyIncome));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-House Purchase Year = %s", purchaseYear));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Apartment Rent Before Home Purchase = %s", apartmentRent));
+        stringBuilder.append("\n");
+        stringBuilder.append("Contribution Percentages House vs Investments (Adjusted to meet min mortgage payment and rent):");
+        stringBuilder.append("\n");
+        Arrays.stream(percentSchedule).sequential().forEach(d -> stringBuilder.append(GeneralUtil.round(d, 1) + ", "));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-House Appreciation Rate = %s", home.getYearlyReturnRate()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Mortgage Rate = %s", home.getMortgage().getYearlyInterestRate()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-House Value = %s", home.getCurrentValue()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Mortgage Loan Amount = %s", home.getMortgage().getLoanAmount()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Monthly Insurance =  %s", home.getHomeInsurance().getMonthlyPayment()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Monthly PMI = %s", home.getPmi().getMonthlyPayment()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Property Tax Rate = %s", home.getPropertyTaxRate()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Monthy HOA Fee = %s", home.getMontlyHOAFee()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Yearly Up Keep = %s", home.getYearlyUpkeepCost()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Yearly Return Rate = %s", fund.getYearlyReturnRate()));
+        stringBuilder.append("\n");
+        stringBuilder.append(String.format("-Current Value = %s", fund.getCurrentValue()));
+        stringBuilder.append("\n");
 
 
 
@@ -103,6 +121,7 @@ public class CompositePlanParser {
                 .fund(fund)
                 .home(home)
                 .apartment(apartment)
+                .stringBuilder(stringBuilder)
                 .build();
     }
 

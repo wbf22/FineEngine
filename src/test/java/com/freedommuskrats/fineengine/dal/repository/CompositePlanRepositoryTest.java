@@ -71,7 +71,7 @@ public class CompositePlanRepositoryTest {
                 TimeUnit.MONTH
         );
 
-        return new CompositePlan(years, fund, home, null);
+        return new CompositePlan(years, fund, home, null, null);
     }
 
     @Test
