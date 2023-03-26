@@ -94,7 +94,7 @@ public class CompositePlan {
         builder.append("\n");
         builder.append(String.format("-down payment %s", home.getDownPayment()));
         builder.append("\n");
-        builder.append(String.format("-fund profit %s", eftSummary));
+        builder.append(String.format("-fund interest %s", eftSummary));
         builder.append("\n");
         builder.append("-home schedule");
         builder.append("\n");

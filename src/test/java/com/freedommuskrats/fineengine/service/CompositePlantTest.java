@@ -2,14 +2,12 @@ package com.freedommuskrats.fineengine.service;
 
 import com.freedommuskrats.fineengine.dal.models.comparison.CompositePlan;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
-import com.freedommuskrats.fineengine.dal.models.investments.Investment;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
 import com.freedommuskrats.fineengine.service.fileparsers.CompositePlanParser;
 import com.freedommuskrats.fineengine.service.fileparsers.FundParser;
 import com.freedommuskrats.fineengine.service.fileparsers.HomeParser;
 import org.junit.jupiter.api.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 
@@ -19,7 +17,7 @@ public class CompositePlantTest {
 
     @Test
     void buildPlan() throws IOException {
-        String[] years = {"1998", "2023", "2024", "2025", "2026", "2027"};
+        String[] years = {"1a", "1b", "2023", "2024", "2025", "2026", "2027"};
 
         Arrays.stream(years).sequential().forEach(year -> {
             try {

@@ -17,16 +17,16 @@ If left blank the value above is used as a default until house
 is paid off. If percent is less than the minimum mortgage payment
 it is ignored and the minimum payment will be given)
 
-year 1 = 100%
-year 2 = 100%
-year 3 = 100%
-year 4 = 100%
-year 5 = 100%
-year 6 = 100%
-year 7 = 90%
-year 8 = 80%
-year 9 = 70%
-year 10 = 60%
+year 1 = 0%
+year 2 = 0%
+year 3 = 0%
+year 4 = 0%
+year 5 = 0%
+year 6 = 0%
+year 7 = 0%
+year 8 = 0%
+year 9 = 0%
+year 10 = 0%
 year 11 = 0%
 year 12 = 0%
 year 13 = 0%

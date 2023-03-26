@@ -7,7 +7,7 @@ or this will break badly)
 
 House Appreciation Rate = 4%
 Mortgage Rate = 6%
-House Value = 350000
+House Value = 300000
 Loan Length in Years = 30
 Monthly Insurance = 125
 Monthly PMI = 120

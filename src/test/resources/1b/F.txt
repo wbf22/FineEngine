@@ -1,0 +1,11 @@
+#### Fill out this form replacing the default values ####
+
+ Once you're done save it, (cmd+s)
+and return to the terminal. (make sure not to add new lines or get rid of '=' signs
+or this will break badly)
+
+
+Yearly Return Rate = 7%
+Current Value = 2000
+
+
