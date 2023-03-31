@@ -1,5 +1,7 @@
 package com.freedommuskrats.fineengine.util;
 
+import java.util.Random;
+
 public class GeneralUtil {
 
     public static void formatPrint(String format, Object singleValue) {
@@ -20,7 +22,19 @@ public class GeneralUtil {
         return Math.round(value * mult) / mult;
     }
 
+    public static double randD (double min, double max) {
+        Random random = new Random(System.currentTimeMillis() + System.nanoTime());
+        return random.nextDouble() * (max - min) + min;
+    }
 
+    public static int randI (int min, int max) {
+        Random random = new Random(System.currentTimeMillis() + System.nanoTime());
+        return (int) Math.round(random.nextDouble() * (max - min) + min);
+    }
+
+    public static double avg (double one, double two, double three) {
+        return (one + two + three) / 3;
+    }
     public char[][] concat(char[][] g, char[] toConcat, int dim) {
         if (dim == 0) {
             char [][] result = new char[g.length + 1][g[0].length];

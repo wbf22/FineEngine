@@ -55,7 +55,7 @@ public class CompositePlan {
         this.planLengthYears = planLengthYears;
         funds = new ArrayList<>(List.of(fund));
         homes = new ArrayList<>(List.of(home));
-        apartments  = new ArrayList<>(List.of(apartment));
+        apartments  = (apartment == null)? new ArrayList<>() : new ArrayList<>(List.of(apartment));
         this.builder = stringBuilder;
     }
 
@@ -69,7 +69,7 @@ public class CompositePlan {
     public void displayBasic(String resultFile) throws IOException {
         Home home = homes.get(0);
         Fund fund = funds.get(0);
-        Apartment apartment = apartments.get(0);
+        Apartment apartment = (apartments.size() > 0)? apartments.get(0) : new Apartment();
 
         Summary homeSummary = home.getSummary(
                 planLengthYears - apartment.getYearsInApartment(),

@@ -125,7 +125,7 @@ public class CompositePlanParser {
                 .build();
     }
 
-    private static double getDownPayment(double monthlyIncome, double[] percentSchedule, int yearsInApartment) {
+    public static double getDownPayment(double monthlyIncome, double[] percentSchedule, int yearsInApartment) {
         double downPayment = 0;
         for (int i = 0; i < yearsInApartment; i++) {
             downPayment += monthlyIncome * 12 * percentSchedule[i] / 100;
@@ -133,7 +133,7 @@ public class CompositePlanParser {
         return downPayment;
     }
 
-    private static double[] replaceValuesToLowWithMinMortgagePayment(Home home, double monthlyIncome, double[] percentSchedule, int yearsInApartment) {
+    public static double[] replaceValuesToLowWithMinMortgagePayment(Home home, double monthlyIncome, double[] percentSchedule, int yearsInApartment) {
         double minPayment = home.getMinMonthlyMortgagePayment();
         double minPercentage = 100 * minPayment / monthlyIncome;
         for (int i = yearsInApartment; i < home.getMortgage().getTermYearsLeft() + yearsInApartment; i++) {
@@ -142,7 +142,7 @@ public class CompositePlanParser {
         return percentSchedule;
     }
 
-    private static List<Double> createContributionSchedule(
+    public static List<Double> createContributionSchedule(
             int planLength,
             double monthlyIncome,
             int purchaseYear,

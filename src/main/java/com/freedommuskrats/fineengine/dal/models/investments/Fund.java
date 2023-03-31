@@ -39,14 +39,21 @@ public class Fund extends Investment {
 
         int periods = (int) (years * contributionPeriod.periodPerYear);
 
-        periods = (periods >= projection.getLines().size())? projection.getLines().size() - 1 : periods;
-
-        double interest = projection.getLines()
-                .subList(0, periods).stream()
-                .map(ProjectionLine::getInterest)
-                .reduce(0.0, Double::sum);
-        return new Summary(interest, 0);
+//        periods = (periods >= projection.getLines().size())? projection.getLines().size() - 1 : periods;
+//
+//        double interest = projection.getLines()
+//                .subList(0, periods).stream()
+//                .map(ProjectionLine::getInterest)
+//                .reduce(0.0, Double::sum);
+        return new Summary(projection.getLines().get(periods - 1).getEndBalance(), 0);
     }
 
-
+    public Projection getProjection(){
+        return makeProjection(
+                currentValue,
+                contributionSchedule,
+                contributionPeriod,
+                false,
+                TimeUnit.YEAR);
+    }
 }
