@@ -14,7 +14,7 @@ public class GeneticAlgoAi {
     public static final int PLAN_LENGTH = 40;
     public static final int MONTHLY_INCOME = 3500;
     public static final double FUND_RETURN_RATE = 7.0;
-    public static final int HOUSE_PRICE = 260000;
+    public static final int HOUSE_PRICE = 240000;
     public static final int MAX_DOWN_PAYMENT = 30000;
     public static final double HOUSE_APPRECIATION = 5.0;
     public static final double MORTGAGE_RATE = 5.0;
