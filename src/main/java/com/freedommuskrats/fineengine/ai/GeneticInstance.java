@@ -214,7 +214,7 @@ public class GeneticInstance {
         builder.append("\n");
         builder.append(String.format("-loan length %s", home.getMortgage().getLoanLength()));
         builder.append("\n");
-        builder.append(String.format("-down payment %s", home.getSummary(PLAN_LENGTH - apartmentYears, false)));
+        builder.append(String.format("-%s", home.getSummary(PLAN_LENGTH - apartmentYears, false)));
         builder.append("\n");
 
         Fund fund = compositePlan.getFunds().get(0);
@@ -222,7 +222,7 @@ public class GeneticInstance {
         builder.append("\n");
         builder.append(String.format("-initial investment %s", initialInvestment));
         builder.append("\n");
-        builder.append(String.format("-initial investment %s", fund.getSummary(PLAN_LENGTH, false)));
+        builder.append(String.format("-%s", fund.getSummary(PLAN_LENGTH, false)));
         builder.append("\n");
         return builder.toString();
     }
