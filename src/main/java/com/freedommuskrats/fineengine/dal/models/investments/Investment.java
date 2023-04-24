@@ -5,7 +5,6 @@ import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
 import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import com.freedommuskrats.fineengine.util.AnnuityMath;
-import lombok.Builder;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -21,7 +20,7 @@ public abstract class Investment {
     protected Long investmentId;
 
     protected double yearlyReturnRate;
-    protected double currentValue;
+    protected double startingValue;
     protected String name;
     @ElementCollection
     protected List<Double> contributionSchedule;
@@ -39,7 +38,7 @@ public abstract class Investment {
             TimeUnit contributionPeriod
     ) {
         this.yearlyReturnRate = yearlyReturnRate;
-        this.currentValue = value;
+        this.startingValue = value;
         this.name = name;
         this.contributionSchedule = contributionSchedule;
         this.contributionPeriod = contributionPeriod;

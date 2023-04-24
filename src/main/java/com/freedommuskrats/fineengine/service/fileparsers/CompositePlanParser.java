@@ -13,7 +13,6 @@ import java.io.FileReader;
 import java.util.*;
 
 import static com.freedommuskrats.fineengine.util.AnnuityMath.buildMonthlyContributionSchedule;
-import static com.freedommuskrats.fineengine.util.GeneralUtil.formatPrint;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.print;
 
 public class CompositePlanParser {
@@ -46,7 +45,7 @@ public class CompositePlanParser {
         int yearsInApartment = Math.min(purchaseYear, planLength);
 
         double downPayment = getDownPayment(monthlyIncome, percentSchedule, yearsInApartment);
-        double loanAmount = home.getCurrentValue() - downPayment;
+        double loanAmount = home.getStartingValue() - downPayment;
         home.getMortgage().setLoanAmount(loanAmount);
         home.setDownPayment(downPayment);
 
@@ -54,7 +53,7 @@ public class CompositePlanParser {
 
         List<Double> fundSchedule = createContributionSchedule(
                 planLength, monthlyIncome, purchaseYear, apartmentRent, percentToHome,
-                percentSchedule, home.getMortgage().getTermYearsLeft(), true);
+                percentSchedule, home.getMortgage().getLoanLength(), true);
 
         double percentToApartment = 100 * apartmentRent / monthlyIncome;
         for (int i = 0; i < yearsInApartment; i++) {
@@ -63,7 +62,7 @@ public class CompositePlanParser {
 
         List<Double> homeSchedule = createContributionSchedule(
                 planLength, monthlyIncome, purchaseYear, apartmentRent, percentToHome,
-                percentSchedule, home.getMortgage().getTermYearsLeft(), false);
+                percentSchedule, home.getMortgage().getLoanLength(), false);
 
         fund.setContributionSchedule(fundSchedule);
 
@@ -94,7 +93,7 @@ public class CompositePlanParser {
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Mortgage Rate = %s", home.getMortgage().getYearlyInterestRate()));
         stringBuilder.append("\n");
-        stringBuilder.append(String.format("-House Value = %s", home.getCurrentValue()));
+        stringBuilder.append(String.format("-House Value = %s", home.getStartingValue()));
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Mortgage Loan Amount = %s", home.getMortgage().getLoanAmount()));
         stringBuilder.append("\n");
@@ -110,7 +109,7 @@ public class CompositePlanParser {
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Yearly Return Rate = %s", fund.getYearlyReturnRate()));
         stringBuilder.append("\n");
-        stringBuilder.append(String.format("-Current Value = %s", fund.getCurrentValue()));
+        stringBuilder.append(String.format("-Current Value = %s", fund.getStartingValue()));
         stringBuilder.append("\n");
 
 
@@ -136,7 +135,7 @@ public class CompositePlanParser {
     public static double[] replaceValuesToLowWithMinMortgagePayment(Home home, double monthlyIncome, double[] percentSchedule, int yearsInApartment) {
         double minPayment = home.getMinMonthlyMortgagePayment();
         double minPercentage = 100 * minPayment / monthlyIncome;
-        for (int i = yearsInApartment; i < home.getMortgage().getTermYearsLeft() + yearsInApartment; i++) {
+        for (int i = yearsInApartment; i < home.getMortgage().getLoanLength() + yearsInApartment; i++) {
             percentSchedule[i] = Math.max(minPercentage, percentSchedule[i]);
         }
         return percentSchedule;

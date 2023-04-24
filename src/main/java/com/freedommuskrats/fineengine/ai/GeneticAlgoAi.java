@@ -12,10 +12,12 @@ import static com.freedommuskrats.fineengine.util.GeneralUtil.randI;
 public class GeneticAlgoAi {
 
     public static final int PLAN_LENGTH = 40;
-    public static final int MONTHLY_INCOME = 3500;
+    public static final int MONTHLY_INCOME = 3300;
     public static final double FUND_RETURN_RATE = 7.0;
-    public static final int HOUSE_PRICE = 240000;
-    public static final int MAX_DOWN_PAYMENT = 30000;
+    public static final int MIN_HOUSE_PRICE = 240000;
+    public static final int MAX_HOUSE_PRICE = 300000;
+    public static final int MAX_DOWN_PAYMENT = 120000;
+    public static final int APARTMENT_RENT = 900;
     public static final double HOUSE_APPRECIATION = 5.0;
     public static final double MORTGAGE_RATE = 5.0;
     public static final double MONTHLY_INSURANCE = 125;
@@ -27,7 +29,7 @@ public class GeneticAlgoAi {
 
     public static final int NUMBER_BEST_TO_KEEP = 5;
     public static final int POPULATION = 50;
-    public static final int ITERATIONS = 1000;
+    public static final int ITERATIONS = 2000;
 
     public static void main(String[] args) throws IOException {
         List<GeneticInstance> saves = new ArrayList<>();
@@ -48,13 +50,15 @@ public class GeneticAlgoAi {
                 );
             }
 
-            //add a random
-            GeneticInstance start = new GeneticInstance();
-            start.init();
-            start.build();
-            specimens.add(start);
+            //add a few randoms
+            for (int j = 0; j < 5; j++) {
+                GeneticInstance start = new GeneticInstance();
+                start.init();
+                start.build();
+                specimens.add(start);
+            }
 
-            //kill off random portion
+            //kill off unfit instances
             double fitness = 0.8 * specimens.get(randI(0, specimens.size() - 1)).getUtility();
             List<GeneticInstance> toRemove = new ArrayList<>();
             for (int j = 0; j < specimens.size(); j++) {
@@ -80,7 +84,9 @@ public class GeneticAlgoAi {
         best.getCompositePlan().displayBasic("src/main/resources/Result.txt");
         System.out.println(best);
 
-        System.out.println("******Saves******");
+        System.out.println("####################");
+        System.out.println("# SAVES");
+        System.out.println("####################");
         for (int i = 0; i < 4; i++) {
             System.out.println(saves.get(randI(0, saves.size())).toString());
         }

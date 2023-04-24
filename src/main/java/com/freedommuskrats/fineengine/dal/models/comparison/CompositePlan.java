@@ -17,9 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static com.freedommuskrats.fineengine.util.GeneralUtil.formatPrint;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.print;
 
 
@@ -73,8 +71,8 @@ public class CompositePlan {
 
         Summary homeSummary = home.getSummary(
                 planLengthYears - apartment.getYearsInApartment(),
-                (planLengthYears < home.getMortgage().getTermYearsLeft()));
-        if (planLengthYears < home.getMortgage().getTermYearsLeft())
+                (planLengthYears < home.getMortgage().getLoanLength()));
+        if (planLengthYears < home.getMortgage().getLoanLength())
             builder.append("Assuming home sale since plan length is less than mortgage length");
 
         double monthlyPayment = home.getMinMonthlyMortgagePayment();
@@ -119,7 +117,7 @@ public class CompositePlan {
                 .toList();
 
         List<Double> investment = fund.makeProjection(
-                fund.getCurrentValue(),
+                fund.getStartingValue(),
                 fund.getContributionSchedule(),
                 fund.getContributionPeriod(),
                 false,

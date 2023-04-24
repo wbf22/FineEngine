@@ -30,7 +30,7 @@ public class TerminalGraphTest {
     void test_TerminalGraph_withRealAnnuity() {
         Fund fund = new Fund(6, 2000, "EFT", null, null, null);
         Projection projection = fund.makeProjection(
-                fund.getCurrentValue(),
+                fund.getStartingValue(),
                 1000,
                 TimeUnit.MONTH,
                 false,

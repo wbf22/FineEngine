@@ -13,7 +13,7 @@ public class Stock extends Investment{
     @Override
     public Summary getSummary(int years, boolean liquidateAtEnd) {
         Projection projection = makeProjection(
-                currentValue,
+                startingValue,
                 contributionSchedule,
                 contributionPeriod,
                 false,

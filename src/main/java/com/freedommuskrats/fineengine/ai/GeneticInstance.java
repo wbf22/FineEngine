@@ -6,20 +6,18 @@ import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.dal.models.insurance.Insurance;
 import com.freedommuskrats.fineengine.dal.models.investments.Fund;
 import com.freedommuskrats.fineengine.dal.models.loan.Loan;
-import com.freedommuskrats.fineengine.dal.models.property.Apartment;
 import com.freedommuskrats.fineengine.dal.models.property.Home;
 import com.freedommuskrats.fineengine.util.GeneralUtil;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 
 import static com.freedommuskrats.fineengine.ai.GeneticAlgoAi.*;
 import static com.freedommuskrats.fineengine.ai.GeneticAlgoAi.MONTHLY_INCOME;
 import static com.freedommuskrats.fineengine.ai.GeneticAlgoAi.PLAN_LENGTH;
 import static com.freedommuskrats.fineengine.service.fileparsers.CompositePlanParser.*;
-import static com.freedommuskrats.fineengine.service.fileparsers.HomeParser.HOUSE_VALUE;
 import static com.freedommuskrats.fineengine.util.GeneralUtil.*;
 
 @Data
@@ -27,34 +25,39 @@ public class GeneticInstance {
 
     private CompositePlan compositePlan;
 
-    private double[] percentSchedule = new double[50];
+    private double[] percentSchedule = new double[PLAN_LENGTH];
+    private double preHouseSavings;
     private double downPayment;
     private double initialInvestment;
     private int loanLength;
+    private int housePrice;
+    private int apartmentYears;
 
     public void init() {
         for (int i = 0; i < percentSchedule.length; i++) {
             percentSchedule[i] = randD(0, 100);
         }
-        downPayment = randD(0, MAX_DOWN_PAYMENT);
-        initialInvestment = MAX_DOWN_PAYMENT - downPayment;
-        loanLength = randI(15, 30);
+        housePrice = randI(MIN_HOUSE_PRICE, MAX_HOUSE_PRICE);
+
+        apartmentYears = randI(1, (MAX_DOWN_PAYMENT/(MONTHLY_INCOME-APARTMENT_RENT))/12);
+        preHouseSavings = apartmentYears * (double) (MONTHLY_INCOME-APARTMENT_RENT) * 12.0;
+        downPayment = preHouseSavings * randD(0, 1);
+
+        initialInvestment = preHouseSavings - downPayment;
+        loanLength = randI(20, 30);
+
     }
 
     public void build() {
-        int planLength = PLAN_LENGTH;
-        double monthlyIncome = MONTHLY_INCOME;
-
-
         Home home = Home.builder()
                 .yearlyReturnRate(HOUSE_APPRECIATION)
                 .mortgage(Loan.builder()
-                        .loanAmount(HOUSE_PRICE)
+                        .loanAmount(housePrice - downPayment)
                         .interestRate(MORTGAGE_RATE)
                         .termYearsLeft(loanLength)
                         .build()
                 )
-                .value(HOUSE_PRICE - downPayment)
+                .value(housePrice)
                 .homeInsurance(Insurance.builder()
                         .monthlyPayment(MONTHLY_INSURANCE)
                         .build()
@@ -68,19 +71,22 @@ public class GeneticInstance {
                 .yearlyUpkeepCost(YEARLY_UP_KEEP)
                 .build();
 
-        double loanAmount = home.getCurrentValue() - downPayment;
-        home.getMortgage().setLoanAmount(loanAmount);
         home.setDownPayment(downPayment);
 
-        percentSchedule = replaceValuesToLowWithMinMortgagePayment(home, monthlyIncome, percentSchedule, 0);
+        percentSchedule = replaceValuesToLowWithMinMortgagePayment(home, MONTHLY_INCOME, percentSchedule, 0);
 
-        List<Double> fundSchedule = createContributionSchedule(
-                planLength, monthlyIncome, 0, 0, 0,
-                percentSchedule, home.getMortgage().getTermYearsLeft(), true);
+        List<Double> fundPostApartment = createContributionSchedule(
+                PLAN_LENGTH - apartmentYears, MONTHLY_INCOME, 0, 0, 0,
+                percentSchedule, home.getMortgage().getLoanLength(), true);
 
         List<Double> homeSchedule = createContributionSchedule(
-                planLength, monthlyIncome, 0, 0, 0,
-                percentSchedule, home.getMortgage().getTermYearsLeft(), false);
+                PLAN_LENGTH - apartmentYears, MONTHLY_INCOME, 0, 0, 0,
+                percentSchedule, home.getMortgage().getLoanLength(), false);
+
+        Double[] fundInApartment = new Double[apartmentYears * 12];
+        Arrays.fill(fundInApartment, (preHouseSavings-downPayment)/(apartmentYears * 12));
+        List<Double> fundSchedule = new ArrayList<>(Arrays.asList(fundInApartment));
+        fundSchedule.addAll(fundPostApartment);
 
         Fund fund = Fund.builder()
                 .value(initialInvestment)
@@ -92,7 +98,7 @@ public class GeneticInstance {
         home.setContributionSchedule(homeSchedule);
 
         compositePlan = CompositePlan.builder()
-                .planLengthYears(planLength)
+                .planLengthYears(PLAN_LENGTH)
                 .fund(fund)
                 .home(home)
                 .stringBuilder(buildStringBuilderStuff(home, fund))
@@ -117,7 +123,7 @@ public class GeneticInstance {
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Mortgage Rate = %s", home.getMortgage().getYearlyInterestRate()));
         stringBuilder.append("\n");
-        stringBuilder.append(String.format("-House Value = %s", home.getCurrentValue()));
+        stringBuilder.append(String.format("-House Value = %s", home.getStartingValue()));
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Mortgage Loan Amount = %s", home.getMortgage().getLoanAmount()));
         stringBuilder.append("\n");
@@ -133,7 +139,7 @@ public class GeneticInstance {
         stringBuilder.append("\n");
         stringBuilder.append(String.format("-Yearly Return Rate = %s", fund.getYearlyReturnRate()));
         stringBuilder.append("\n");
-        stringBuilder.append(String.format("-Current Value = %s", fund.getCurrentValue()));
+        stringBuilder.append(String.format("-Current Value = %s", fund.getStartingValue()));
         stringBuilder.append("\n");
         return stringBuilder;
     }
@@ -150,10 +156,20 @@ public class GeneticInstance {
                 newInstance.getPercentSchedule()[i] = mother.getPercentSchedule()[i];
             }
         }
+
+        newInstance.setHousePrice(
+                (int) avg(newInstance.getHousePrice(), father.getHousePrice(), mother.getHousePrice())
+        );
+        newInstance.setApartmentYears(
+                (int) avg(newInstance.getApartmentYears(), father.getApartmentYears(), mother.getApartmentYears())
+        );
+        newInstance.setPreHouseSavings(
+                newInstance.getApartmentYears() * (MONTHLY_INCOME-APARTMENT_RENT) * 12
+        );
         newInstance.setDownPayment(
                 avg(newInstance.getDownPayment(), father.getDownPayment(), mother.getDownPayment())
         );
-        newInstance.setInitialInvestment(MAX_DOWN_PAYMENT - newInstance.getDownPayment());
+        newInstance.setInitialInvestment(newInstance.getPreHouseSavings() - newInstance.getDownPayment());
         newInstance.setLoanLength(
                 (int) avg(newInstance.getLoanLength(), father.getLoanLength(), mother.getLoanLength())
         );
@@ -163,7 +179,7 @@ public class GeneticInstance {
     }
 
     public double getUtility() {
-        Summary homeSummary = compositePlan.getHomes().get(0).getSummary(PLAN_LENGTH, false);
+        Summary homeSummary = compositePlan.getHomes().get(0).getSummary(PLAN_LENGTH - apartmentYears, false);
         Summary fundSummary = compositePlan.getFunds().get(0).getSummary(PLAN_LENGTH, false);
         return homeSummary.profitOrCost() - homeSummary.debt() + fundSummary.profitOrCost();
     }
@@ -178,13 +194,35 @@ public class GeneticInstance {
         builder.append("\n");
         Arrays.stream(percentSchedule).sequential().forEach(d -> builder.append(GeneralUtil.round(d, 1) + ", "));
         builder.append("\n");
+        builder.append(String.format("-years in apartment %s", apartmentYears));
+        builder.append("\n");
+        builder.append(String.format("-end total %s", getUtility()));
+        builder.append("\n");
+
+        Home home = compositePlan.getHomes().get(0);
+        builder.append("*********Home**************");
+        builder.append("\n");
+        builder.append(String.format("-home value %s", home.getStartingValue()));
+        builder.append("\n");
         builder.append(String.format("-down payment %s", downPayment));
+        builder.append("\n");
+        builder.append(String.format("-monthly cost %s", home.getTotalMinMonthlyCost()));
+        builder.append("\n");
+        builder.append(String.format("-mortgage payment %s", home.getMinMonthlyMortgagePayment()));
+        builder.append("\n");
+        builder.append(String.format("-loan amount %s", home.getMortgage().getLoanAmount()));
+        builder.append("\n");
+        builder.append(String.format("-loan length %s", home.getMortgage().getLoanLength()));
+        builder.append("\n");
+        builder.append(String.format("-down payment %s", home.getSummary(PLAN_LENGTH - apartmentYears, false)));
+        builder.append("\n");
+
+        Fund fund = compositePlan.getFunds().get(0);
+        builder.append("*********Fund**************");
         builder.append("\n");
         builder.append(String.format("-initial investment %s", initialInvestment));
         builder.append("\n");
-        builder.append(String.format("-loan length %s", loanLength));
-        builder.append("\n");
-        builder.append(String.format("-end total %s", getUtility()));
+        builder.append(String.format("-initial investment %s", fund.getSummary(PLAN_LENGTH, false)));
         builder.append("\n");
         return builder.toString();
     }

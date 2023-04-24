@@ -18,7 +18,7 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long loadId;
     private double loanAmount;
-    private double termYearsLeft;
+    private double loanLength;
     private double yearlyInterestRate;
     @ElementCollection
     private List<Double> contributionSchedule;
@@ -31,7 +31,7 @@ public class Loan {
     @Builder
     public Loan(double loanAmount, double termYearsLeft, double interestRate, List<Double> contributionSchedule) {
         this.loanAmount = loanAmount;
-        this.termYearsLeft = termYearsLeft;
+        this.loanLength = termYearsLeft;
         this.yearlyInterestRate = interestRate;
         this.contributionSchedule = contributionSchedule;
     }

@@ -3,7 +3,6 @@ package com.freedommuskrats.fineengine.dal.models.investments;
 import com.freedommuskrats.fineengine.dal.models.TimeUnit;
 import com.freedommuskrats.fineengine.dal.models.comparison.Summary;
 import com.freedommuskrats.fineengine.service.projections.Projection;
-import com.freedommuskrats.fineengine.service.projections.ProjectionLine;
 import lombok.*;
 
 import javax.persistence.Entity;
@@ -31,7 +30,7 @@ public class Fund extends Investment {
     @Override
     public Summary getSummary(int years, boolean liquidateAtEnd) {
         Projection projection = makeProjection(
-                currentValue,
+                startingValue,
                 contributionSchedule,
                 contributionPeriod,
                 false,
@@ -50,7 +49,7 @@ public class Fund extends Investment {
 
     public Projection getProjection(){
         return makeProjection(
-                currentValue,
+                startingValue,
                 contributionSchedule,
                 contributionPeriod,
                 false,

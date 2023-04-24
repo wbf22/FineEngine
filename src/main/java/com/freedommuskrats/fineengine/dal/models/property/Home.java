@@ -86,13 +86,8 @@ public class Home extends Property {
     }
 
     public double getMinMonthlyMortgagePayment() {
-        return mortgage.calculateMonthlyPaymentSchedule(
-                mortgage.getLoanAmount(),
-                TimeUnit.MONTH,
-                false,
-                TimeUnit.MONTH,
-                (int) Math.round(mortgage.getTermYearsLeft())
-        ).getLines().get(0).getContribution() / 12;
+        return getMonthlyMortgagePaymentSchedule().getLines().get(0)
+                .getContribution() / 12;
     }
 
     public Projection getMonthlyMortgagePaymentSchedule() {
@@ -101,7 +96,7 @@ public class Home extends Property {
                 TimeUnit.MONTH,
                 false,
                 TimeUnit.MONTH,
-                (int) Math.round(mortgage.getTermYearsLeft())
+                (int) Math.round(mortgage.getLoanLength())
         );
     }
 
@@ -111,7 +106,7 @@ public class Home extends Property {
                 TimeUnit.MONTH,
                 false,
                 TimeUnit.MONTH,
-                (int) Math.round(mortgage.getTermYearsLeft()),
+                (int) Math.round(mortgage.getLoanLength()),
                 monthlyPayments
         );
     }
@@ -121,7 +116,7 @@ public class Home extends Property {
         Projection mortgageProjection = getMonthlyMortgagePaymentSchedule(this.contributionSchedule);
 
         Projection houseAppr = makeProjection(
-                currentValue,
+                startingValue,
                 0,
                 TimeUnit.YEAR,
                 false,
@@ -149,7 +144,7 @@ public class Home extends Property {
 
 
         Projection houseAppr = makeProjection(
-                currentValue,
+                startingValue,
                 0,
                 TimeUnit.YEAR,
                 false,
@@ -181,7 +176,7 @@ public class Home extends Property {
         double insCost = homeInsurance.getMonthlyPayment() * 12 * yearsToProject;
 
         double pmiCost = 0;
-        double loanToValueRatio = mortgageProjection.getLines().get(0).getStartBalance() / currentValue;
+        double loanToValueRatio = mortgageProjection.getLines().get(0).getStartBalance() / startingValue;
         int i = 0;
         while (loanToValueRatio > .8 && i < yearsToProject) {
             pmiCost += pmi.getMonthlyPayment() * 12;
@@ -190,9 +185,18 @@ public class Home extends Property {
             i++;
         }
 
-        double taxCost = currentValue * (propertyTaxRate / 100) * yearsToProject;
+        double taxCost = startingValue * (propertyTaxRate / 100) * yearsToProject;
         double yearlyUpKeepCost = yearlyUpkeepCost * yearsToProject;
         return  mortgageCost + hoaCost + insCost + pmiCost + taxCost + yearlyUpKeepCost;
+    }
+
+    public double getTotalMinMonthlyCost() {
+        return getMinMonthlyMortgagePayment()
+                + montlyHOAFee
+                + homeInsurance.getMonthlyPayment()
+                + pmi.getMonthlyPayment()
+                + yearlyUpkeepCost/12
+                + (startingValue * (propertyTaxRate / 100))/12;
     }
 
 }
